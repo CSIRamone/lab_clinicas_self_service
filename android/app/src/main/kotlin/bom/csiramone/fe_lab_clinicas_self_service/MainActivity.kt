@@ -1,4 +1,4 @@
-package bom.csiramone.fe_lab_clinicas_self_service
+package com.csiramone.fe_lab_clinicas_self_service
 
 import io.flutter.embedding.android.FlutterActivity
 
