@@ -8,10 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_getit/flutter_getit.dart';
 
 class LoginRouter extends FlutterGetItModulePageRouter {
+  const LoginRouter({super.key});
+
   @override
   List<Bind<Object>> get bindings => [
     Bind.lazySingleton<UserLoginService>((i) => UserLoginServiceImpl(userRepository: i())),
-    Bind.lazySingleton((i) => LoginController()),
+    Bind.lazySingleton((i) => LoginController(userLoginService: i())),
     
   ];
 

@@ -18,7 +18,7 @@ class UserRepositoryImpl implements UserRepository {
   Future<Either<AuthException, String>> login(String email, String password) async {
     try{
       final Response(data: {'access_token': accessToken}) = await _restClient.post(
-        '/auth/login',
+        '/auth',
         data: {
           'email': email,
           'password': password,

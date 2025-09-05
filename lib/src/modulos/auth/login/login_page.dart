@@ -1,7 +1,42 @@
+import 'package:fe_lab_clinicas_self_service/src/modulos/auth/login/login_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_getit/flutter_getit.dart';
+import 'package:lab_clinicas_core/lab_clinicas_core.dart';
+import 'package:signals_flutter/signals_flutter.dart';
+import 'package:validatorless/validatorless.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> with MessagesViewMixin{
+  final controller = Injector.get<LoginController>();
+
+  final formKey = GlobalKey<FormState>();
+  final emailEC = TextEditingController();
+  final passwordEC = TextEditingController();
+
+@override
+  void initState() {
+    messagesListener(controller);
+    
+    effect(() {
+      if(controller.logged) {
+        Navigator.of(context).pushReplacementNamed('/home');
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    emailEC.dispose();
+    passwordEC.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,41 +55,63 @@ class LoginPage extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(8),
               constraints: BoxConstraints(maxWidth: sizeOf.width * 0.9),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 10,
-                    offset: const Offset(0, 5),
-                  ),
-                ],
               ),
-              child: Column(
-                children: [
-                  const Text('Login'),
-                  const SizedBox(height: 32),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: 'Email',
-                      border: OutlineInputBorder(),
+              child: Form(
+                key: formKey,
+                child: Column(
+                  children: [
+                    const Text('Login', style: LabClinicasTheme.titleStyle),
+                    const SizedBox(height: 32),
+                    TextFormField(
+                      controller: emailEC,
+                      validator: Validatorless.multiple([
+                        Validatorless.required('E-mail obrigatório'),
+                        Validatorless.email('E-mail inválido'),
+                      ]),
+                      decoration: const InputDecoration(
+                        labelText: 'Email',
+                        border: OutlineInputBorder(),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 24),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: 'Senha',
-                      border: OutlineInputBorder(),
+                    const SizedBox(height: 24),
+                    Watch((_) {
+                      return TextFormField(
+                        controller: passwordEC,
+                        validator: Validatorless.required('Senha obrigatória'),
+                        decoration: InputDecoration(
+                          labelText: 'Senha',
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              controller.toggleObscurePassword();
+                            },
+                            icon: controller.obscurePassword
+                                ? const Icon(Icons.visibility)
+                                : const Icon(Icons.visibility_off),
+                          ),
+                          border: const OutlineInputBorder(),
+                        ),
+                        obscureText: controller.obscurePassword,
+                      );
+                    }),
+                    const SizedBox(height: 32),
+                    SizedBox(
+                      width: sizeOf.width * 0.5,
+                      height: 48,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          final valid =
+                              formKey.currentState?.validate() ?? false;
+                          if (valid) {
+                            controller.login(emailEC.text, passwordEC.text);
+                          }
+                        },
+                        child: const Text('Entrar'),
+                      ),
                     ),
-                    obscureText: true,
-                  ),
-                  const SizedBox(height: 32),
-                  SizedBox(
-                    width: sizeOf.width * 0.5,
-                    height: 48,
-                    child: ElevatedButton(onPressed: () {}, child: const Text('Entrar'))),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
