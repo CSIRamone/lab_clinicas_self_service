@@ -46,7 +46,9 @@ class HomePage extends StatelessWidget {
               SizedBox(
                 width: sizeOf.width * 0.8,
                 height: 48,
-                child: ElevatedButton(onPressed: () {}, child: const Text('Iniciar Terminal')))
+                child: ElevatedButton(onPressed: () {
+                  Navigator.of(context).pushReplacementNamed('/self-service');
+                }, child: const Text('Iniciar Terminal')))
             ],
           )
         ),
