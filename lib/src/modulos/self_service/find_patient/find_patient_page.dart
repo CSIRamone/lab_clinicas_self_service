@@ -1,17 +1,137 @@
 import 'package:fe_lab_clinicas_self_service/src/modulos/self_service/self_service_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_getit/flutter_getit.dart';
+import 'package:lab_clinicas_core/lab_clinicas_core.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:validatorless/validatorless.dart';
 
-class FindPatientPage extends StatelessWidget {
+class FindPatientPage extends StatefulWidget {
+  const FindPatientPage({super.key});
 
-  const FindPatientPage({ super.key });
+  @override
+  State<FindPatientPage> createState() => _FindPatientPageState();
+}
 
-   @override
-   Widget build(BuildContext context) {
-    Injector.get<SelfServiceController>().debug();
-       return Scaffold(
-           appBar: AppBar(title: const Text('Find Patient Page'),),
-           body: Container(),
-       );
+class _FindPatientPageState extends State<FindPatientPage> {
+  final formKey = GlobalKey<FormState>();
+  final CpfPatientEC = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    CpfPatientEC.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: LabClinicasAppBar(
+        actions: [
+          PopupMenuButton(
+            child: const IconPopupMenuWidget(),
+            itemBuilder: (context) {
+              return [
+                const PopupMenuItem(
+                  value: 1,
+                  child: Text('Reiniciar processo'),
+                ),
+              ];
+            },
+            onSelected: (value) async {
+              if (value == 1) {
+                final nav = Navigator.of(context);
+                await SharedPreferences.getInstance().then((sp) => sp.clear());
+                nav.pushNamedAndRemoveUntil('/', (route) => false);
+              }
+            },
+          ),
+        ],
+      ),
+      body: LayoutBuilder(
+        builder: (_, constrains) {
+          var sizeOf = MediaQuery.sizeOf(context);
+          return SingleChildScrollView(
+            child: Container(
+              constraints: BoxConstraints(minHeight: constrains.maxHeight),
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/background_login.png'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: Center(
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  width: sizeOf.width * 0.9,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                      children: [
+                        Image.asset('assets/images/logo_vertical.png'),
+                        const SizedBox(height: 48),
+                        TextFormField(
+                          controller: CpfPatientEC,
+                          validator: Validatorless.required('CPF obrigatório '),
+                          decoration: const InputDecoration(
+                            label: Text('Digite p CPF do paciente'),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        Row(
+                          children: [
+                            const Text(
+                              'Não sabe o CPF do paciente',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: LabClinicasTheme.blueColor,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {},
+                              child: const Text(
+                                'Clique aqui',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: LabClinicasTheme.orangeColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
+                        SizedBox(
+                          width: sizeOf.width * 0.8,
+                          height: 48,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              final valid =
+                                  formKey.currentState?.validate() ?? false;
+                              if (valid) {}
+                            },
+                            child: const Text('Continuar'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
   }
 }
