@@ -1,6 +1,7 @@
 import 'package:brasil_fields/brasil_fields.dart';
 import 'package:fe_lab_clinicas_self_service/src/modulos/self_service/find_patient/find_patient_controller.dart';
 import 'package:fe_lab_clinicas_self_service/src/modulos/self_service/self_service_controller.dart';
+import 'package:fe_lab_clinicas_self_service/src/modulos/self_service/widget/lab_clinicas_sef_service_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_getit/flutter_getit.dart';
@@ -45,24 +46,7 @@ class _FindPatientPageState extends State<FindPatientPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: LabClinicasAppBar(
-        actions: [
-          PopupMenuButton(
-            child: const IconPopupMenuWidget(),
-            itemBuilder: (context) {
-              return [
-                const PopupMenuItem(
-                  value: 1,
-                  child: Text('Reiniciar processo'),
-                ),
-              ];
-            },
-            onSelected: (value) async {
-              Injector.get<SelfServiceController>().restartProcess();
-            },
-          ),
-        ],
-      ),
+      appBar: LabClinicasSefServiceAppBar(),
       body: LayoutBuilder(
         builder: (_, constrains) {
           var sizeOf = MediaQuery.sizeOf(context);
