@@ -5,21 +5,28 @@ part 'patient_model.g.dart';
 
 @JsonSerializable()
 class PatientModel {
-
-    PatientModel({required this.name, required this.email, required this.phoneNamber, required this.document, required this.address, required this.guardian, required this.guardianIdentificationNumber,});
+  PatientModel({
+    required this.name,
+    required this.email,
+    required this.phoneNumber,
+    required this.document,
+    required this.address,
+    required this.guardian,
+    required this.guardianIdentificationNumber,
+  });
 
   final String name;
   final String email;
 
-  @JsonKey(name: 'phone_namber')
-  final String phoneNamber;
+  @JsonKey(name: 'phone_number')
+  final String phoneNumber;
 
   final String document;
 
   final PatientAddressModel address;
-  @JsonKey(name: 'guardian', defaultValue: '')
+  @JsonKey(name: 'guardian', defaultValue: 'N/A')
   final String guardian;
-@JsonKey(name: 'guardian_identification_number', defaultValue: '')
+  @JsonKey(name: 'guardian_identification_number', defaultValue: 'N/A')
   final String guardianIdentificationNumber;
 
   factory PatientModel.fromJson(Map<String, dynamic> json) =>

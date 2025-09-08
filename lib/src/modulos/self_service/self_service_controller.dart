@@ -1,3 +1,4 @@
+import 'package:fe_lab_clinicas_self_service/src/model/patient_model.dart';
 import 'package:fe_lab_clinicas_self_service/src/model/self_service_model.dart';
 import 'package:lab_clinicas_core/lab_clinicas_core.dart';
 import 'package:signals_flutter/signals_flutter.dart';
@@ -28,6 +29,17 @@ var _model = const SelfServiceModel();
 
   void clearForm() {
     _model = _model.clear();
+  }
+
+  void goToFormPatient(PatientModel? patient){
+    _model = _model.copyWith(patient: () => patient);
+    _step.value = FormSteps.patient;
+    
+  }
+
+  void restartProcess() {
+    _step.value = FormSteps.restart;
+    clearForm();
   }
 
 }

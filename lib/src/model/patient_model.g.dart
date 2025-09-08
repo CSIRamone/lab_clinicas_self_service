@@ -9,21 +9,21 @@ part of 'patient_model.dart';
 PatientModel _$PatientModelFromJson(Map<String, dynamic> json) => PatientModel(
   name: json['name'] as String,
   email: json['email'] as String,
-  phoneNamber: json['phone_namber'] as String,
+  phoneNumber: json['phone_number'] as String,
   document: json['document'] as String,
   address: PatientAddressModel.fromJson(
     json['address'] as Map<String, dynamic>,
   ),
-  guardian: json['guardian'] as String? ?? '',
+  guardian: json['guardian'] as String? ?? 'N/A',
   guardianIdentificationNumber:
-      json['guardian_identification_number'] as String? ?? '',
+      json['guardian_identification_number'] as String? ?? 'N/A',
 );
 
 Map<String, dynamic> _$PatientModelToJson(PatientModel instance) =>
     <String, dynamic>{
       'name': instance.name,
       'email': instance.email,
-      'phone_namber': instance.phoneNamber,
+      'phone_number': instance.phoneNumber,
       'document': instance.document,
       'address': instance.address,
       'guardian': instance.guardian,

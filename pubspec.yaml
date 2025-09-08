@@ -44,7 +44,7 @@ dependencies:
   dio: ^5.4.0
   shared_preferences: ^2.2.2
   json_annotation: ^4.8.1
-  brasil_fields: ^1.14.2
+  brasil_fields: ^1.18.0
   camera: ^0.10.5+9
 
 dev_dependencies:

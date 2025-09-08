@@ -1,8 +1,12 @@
+import 'package:brasil_fields/brasil_fields.dart';
+import 'package:fe_lab_clinicas_self_service/src/modulos/self_service/find_patient/find_patient_controller.dart';
 import 'package:fe_lab_clinicas_self_service/src/modulos/self_service/self_service_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_getit/flutter_getit.dart';
 import 'package:lab_clinicas_core/lab_clinicas_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:signals_flutter/signals_flutter.dart';
 import 'package:validatorless/validatorless.dart';
 
 class FindPatientPage extends StatefulWidget {
@@ -12,18 +16,29 @@ class FindPatientPage extends StatefulWidget {
   State<FindPatientPage> createState() => _FindPatientPageState();
 }
 
-class _FindPatientPageState extends State<FindPatientPage> {
+class _FindPatientPageState extends State<FindPatientPage>
+    with MessagesViewMixin {
   final formKey = GlobalKey<FormState>();
-  final CpfPatientEC = TextEditingController();
+  final cpfPatientEC = TextEditingController();
+  final controller = Injector.get<FindPatientController>();
 
   @override
   void initState() {
+    messagesListener(controller);
+    effect(() {
+      final FindPatientController(:patient, :patientNotFound) = controller;
+      if (patient != null || patientNotFound != null) {
+        //selfServiceController setando o dado do paciente e redirecionando
+        print('paciente: ${patient != null}');
+        Injector.get<SelfServiceController>().goToFormPatient(patient);
+      }
+    });
     super.initState();
   }
 
   @override
   void dispose() {
-    CpfPatientEC.dispose();
+    cpfPatientEC.dispose();
     super.dispose();
   }
 
@@ -43,11 +58,7 @@ class _FindPatientPageState extends State<FindPatientPage> {
               ];
             },
             onSelected: (value) async {
-              if (value == 1) {
-                final nav = Navigator.of(context);
-                await SharedPreferences.getInstance().then((sp) => sp.clear());
-                nav.pushNamedAndRemoveUntil('/', (route) => false);
-              }
+              Injector.get<SelfServiceController>().restartProcess();
             },
           ),
         ],
@@ -80,7 +91,11 @@ class _FindPatientPageState extends State<FindPatientPage> {
                         Image.asset('assets/images/logo_vertical.png'),
                         const SizedBox(height: 48),
                         TextFormField(
-                          controller: CpfPatientEC,
+                          controller: cpfPatientEC,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                            CpfInputFormatter(),
+                          ],
                           validator: Validatorless.required('CPF obrigatório '),
                           decoration: const InputDecoration(
                             label: Text('Digite p CPF do paciente'),
@@ -98,7 +113,9 @@ class _FindPatientPageState extends State<FindPatientPage> {
                               ),
                             ),
                             TextButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                controller.continueWithoutDocument();
+                              },
                               child: const Text(
                                 'Clique aqui',
                                 style: TextStyle(
@@ -118,7 +135,11 @@ class _FindPatientPageState extends State<FindPatientPage> {
                             onPressed: () {
                               final valid =
                                   formKey.currentState?.validate() ?? false;
-                              if (valid) {}
+                              if (valid) {
+                                controller.findPatientByDocument(
+                                  cpfPatientEC.text,
+                                );
+                              }
                             },
                             child: const Text('Continuar'),
                           ),
