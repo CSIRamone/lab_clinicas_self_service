@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_getit/flutter_getit.dart';
 import 'package:lab_clinicas_core/lab_clinicas_core.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 import 'package:validatorless/validatorless.dart';
 
@@ -32,6 +31,7 @@ class _FindPatientPageState extends State<FindPatientPage>
         //selfServiceController setando o dado do paciente e redirecionando
         print('paciente: ${patient != null}');
         Injector.get<SelfServiceController>().goToFormPatient(patient);
+        
       }
     });
     super.initState();
@@ -40,6 +40,7 @@ class _FindPatientPageState extends State<FindPatientPage>
   @override
   void dispose() {
     cpfPatientEC.dispose();
+    controller.resetState();
     super.dispose();
   }
 

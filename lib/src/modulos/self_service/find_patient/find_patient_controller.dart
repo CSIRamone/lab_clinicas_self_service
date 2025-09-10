@@ -41,6 +41,13 @@ class FindPatientController with MessageStateMixin {
     });
   }
 
+  void resetState() {
+    batch(() {
+      _patient.value = null;
+      _patientNotFound.value = null;
+    });
+  }
+
   void continueWithoutDocument() {
     batch(() {
       _patient.value = null;

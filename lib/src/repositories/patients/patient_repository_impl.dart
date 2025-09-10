@@ -1,4 +1,4 @@
-import 'dart:convert';
+
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
@@ -62,5 +62,17 @@ class PatientRepositoryImpl implements PatientRepository {
       log('Erro ao buscar paciente por cpf', error: e, stackTrace: s);
       return Left(RepositoryException());
     }
+  }
+  
+  @override
+  Future<Either<RepositoryException, Unit>> update(PatientModel patient) async {
+    try {
+  await restClient.auth.put('/patients/${patient.id}', data: patient.toJson());
+  return Right(unit);
+} on DioException catch (e, s) {
+  log('Erro ao atualizar o paciente', error: e, stackTrace: s);
+  return Left(RepositoryException());
+ 
+}
   }
 }

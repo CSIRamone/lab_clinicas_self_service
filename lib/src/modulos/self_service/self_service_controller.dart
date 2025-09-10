@@ -6,18 +6,18 @@ import 'package:signals_flutter/signals_flutter.dart';
 enum FormSteps { none, whoIAm, findPatient, patient, documents, done, restart }
 
 class SelfServiceController with MessageStateMixin {
-
-var _model = const SelfServiceModel();
+  var _model = const SelfServiceModel();
+  SelfServiceModel get model => _model;
 
   final _step = signal(FormSteps.none);
 
   FlutterSignal<FormSteps> get step => _step;
 
-  void startProcess(){
+  void startProcess() {
     _step.value = FormSteps.whoIAm;
   }
 
-  void setWhoIAmDataSetAndNext(String name, String lastName){
+  void setWhoIAmDataSetAndNext(String name, String lastName) {
     _model = _model.copyWith(name: () => name, lastName: () => lastName);
     _step.value = FormSteps.findPatient;
   }
@@ -31,15 +31,25 @@ var _model = const SelfServiceModel();
     _model = _model.clear();
   }
 
-  void goToFormPatient(PatientModel? patient){
+  void goToFormPatient(PatientModel? patient) {
     _model = _model.copyWith(patient: () => patient);
     _step.value = FormSteps.patient;
-    
   }
 
   void restartProcess() {
     _step.value = FormSteps.restart;
     clearForm();
   }
+  void restartPatientProcess() {
+    if(_step.value == FormSteps.patient){
+      _step.value = FormSteps.findPatient;
+    clearForm();
+    }
+    
+  }
 
+  void updatePatientAndGoDocument(PatientModel? patient) {
+    _model = _model.copyWith(patient: () => patient);
+    _step.value = FormSteps.documents;
+  }
 }
