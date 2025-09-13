@@ -1,5 +1,5 @@
 import 'package:fe_lab_clinicas_self_service/src/model/patient_model.dart';
-import 'package:fe_lab_clinicas_self_service/src/modulos/self_service/patient/patient_page.dart';
+import 'package:fe_lab_clinicas_self_service/src/modulos/self-service/patient/patient_page.dart';
 import 'package:fe_lab_clinicas_self_service/src/repositories/patients/patient_repository.dart';
 import 'package:flutter/material.dart';
 

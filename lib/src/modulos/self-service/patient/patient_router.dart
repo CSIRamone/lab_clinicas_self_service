@@ -1,6 +1,6 @@
 
-import 'package:fe_lab_clinicas_self_service/src/modulos/self_service/patient/patient_controller.dart';
-import 'package:fe_lab_clinicas_self_service/src/modulos/self_service/patient/patient_page.dart';
+import 'package:fe_lab_clinicas_self_service/src/modulos/self-service/patient/patient_controller.dart';
+import 'package:fe_lab_clinicas_self_service/src/modulos/self-service/patient/patient_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_getit/flutter_getit.dart';
 
