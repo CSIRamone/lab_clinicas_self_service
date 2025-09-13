@@ -49,6 +49,7 @@ class _PatientPageState extends State<PatientPage> with PatientFormController, M
   @override
   void dispose() {
     disposeForm();
+    controller.resetNextStep();
     super.dispose();
   }
 
@@ -288,7 +289,11 @@ class _PatientPageState extends State<PatientPage> with PatientFormController, M
                         onPressed: () {
                           final valid = formKey.currentState?.validate() ?? false;
                           if(valid){
+                            if(patientFound){
                             controller.updateAndNext(updatePatient(selfServiceController.model.patient!));
+                            } else{
+                              controller.saveAndNext(createPatientRegister());
+                            }
                           }
                         },
                         child: Visibility(

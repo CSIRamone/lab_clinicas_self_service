@@ -19,6 +19,10 @@ final nextStep = signal<bool>(false);
   void goNextStep(){
     nextStep.value = true;
   }
+
+  void resetNextStep(){
+    nextStep.value = false;
+  }
   
   Future<void> updateAndNext(PatientModel model) async {
     final updateResult = await _repository.update(model);
@@ -33,4 +37,17 @@ final nextStep = signal<bool>(false);
 
     }
   }
+  
+  Future<void> saveAndNext(RegisterPatientModel registerPatientModel) async {
+    final result = await _repository.register(registerPatientModel);
+    switch(result){
+      case Left():
+      showError('Erro ao cadastrar paciente, chame o atendente');
+      case Right(value: final patient):
+      showInfo('Paciente cadastro com sucesso');
+      this.patient = patient;
+      goNextStep();
+    }
+  }
+
 }

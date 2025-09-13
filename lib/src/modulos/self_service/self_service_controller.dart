@@ -41,12 +41,37 @@ class SelfServiceController with MessageStateMixin {
     clearForm();
   }
   void restartPatientProcess() {
-    if(_step.value == FormSteps.patient){
+  switch (_step.value) {
+    case FormSteps.patient:
       _step.value = FormSteps.findPatient;
-    clearForm();
-    }
-    
+      clearForm();
+      break;
+    case FormSteps.documents:
+      _step.value = FormSteps.patient;
+      clearForm();
+      break;
+    case FormSteps.findPatient:
+      _step.value = FormSteps.whoIAm;
+      clearForm();
+      break;
+    case FormSteps.none:
+     _step.value = FormSteps.none;
+     clearForm();
+     break;
+     case FormSteps.whoIAm:
+     _step.value = FormSteps.restart;
+     clearForm();
+     break;
+     case FormSteps.done:
+     _step.value = FormSteps.whoIAm;
+     clearForm();
+     break;
+     case FormSteps.restart:
+     _step.value = FormSteps.restart;
+     clearForm();
+     break;
   }
+}
 
   void updatePatientAndGoDocument(PatientModel? patient) {
     _model = _model.copyWith(patient: () => patient);
