@@ -9,16 +9,24 @@ import 'package:fe_lab_clinicas_self_service/src/pages/splash_page/splash_page.d
 import 'package:flutter/material.dart';
 import 'package:flutter_getit/flutter_getit.dart';
 import 'package:lab_clinicas_core/lab_clinicas_core.dart';
+import 'package:camera/camera.dart';
+
+late List<CameraDescription> _cameras;
 
 void main() {
-  runZonedGuarded((){
-  runApp(const LabClinicasSelfServiceApp());
-  }, (error, stack) {
-    // ignore: avoid_print
-    log('Erro não capturado:' , error: error, stackTrace: stack);
-    // ignore: avoid_print
-    throw error;
-  });
+  runZonedGuarded(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
+      _cameras = await availableCameras();
+      runApp(const LabClinicasSelfServiceApp());
+    },
+    (error, stack) {
+      // ignore: avoid_print
+      log('Erro não capturado:', error: error, stackTrace: stack);
+      // ignore: avoid_print
+      throw error;
+    },
+  );
 }
 
 class LabClinicasSelfServiceApp extends StatelessWidget {
@@ -32,11 +40,12 @@ class LabClinicasSelfServiceApp extends StatelessWidget {
       pagesBuilders: [
         FlutterGetItPageBuilder(page: (_) => const SplashPage(), path: '/'),
       ],
-      modules: [
-        AuthModule(),
-        HomeModule(),
-        SelfServiceModule(),
-      ],
+      modules: [AuthModule(), HomeModule(), SelfServiceModule()],
+      didStart: () {
+        FlutterGetItBindingRegister.registerPermanentBinding('CAMERAS', [
+          Bind.lazySingleton((i) => _cameras),
+        ]);
+      },
     );
   }
 }
