@@ -7,16 +7,38 @@ import 'package:fe_lab_clinicas_self_service/src/modulos/self-service/widget/lab
 import 'package:flutter/material.dart';
 import 'package:flutter_getit/flutter_getit.dart';
 import 'package:lab_clinicas_core/lab_clinicas_core.dart';
+import 'package:signals_flutter/signals_flutter.dart';
 
-class DocumentsScanConfirmPage extends StatelessWidget {
+class DocumentsScanConfirmPage extends StatefulWidget {
    DocumentsScanConfirmPage({super.key});
 
+  @override
+  State<DocumentsScanConfirmPage> createState() => _DocumentsScanConfirmPageState();
+}
+
+class _DocumentsScanConfirmPageState extends State<DocumentsScanConfirmPage> with MessageStateMixin {
   final controller = Injector.get<DocumentsScanConfirmController>();
+
+  late final pathRemoteStorageComputed = computed(() => controller.pathRemoteStorage.value);
+
+  @override
+  void initState() {
+    super.initState();
+    effect(() {
+      final path = pathRemoteStorageComputed.value;
+      if (path != null) {
+        Navigator.of(context).pop();
+        Navigator.of(context).pop(path);
+      }
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
     final foto = ModalRoute.of(context)!.settings.arguments as XFile;
     final sizeOf = MediaQuery.sizeOf(context);
+
     return Scaffold(
       appBar: LabClinicasSefServiceAppBar(),
       body: Align(
@@ -80,7 +102,11 @@ class DocumentsScanConfirmPage extends StatelessWidget {
                           backgroundColor: LabClinicasTheme.orangeColor,
                           fixedSize: const Size.fromHeight(48),
                         ),
-                        onPressed: () {},
+                        onPressed: () async {
+                          final imageBytes = await foto.readAsBytes();
+                          final fileName = foto.name;
+                          await controller.uploadImage(imageBytes, fileName);
+                        },
                         child: const Text(
                           'Salvar',
                           style: TextStyle(fontSize: 12),

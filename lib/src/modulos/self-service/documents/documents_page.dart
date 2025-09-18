@@ -123,6 +123,9 @@ class _DocumentsPageState extends State<DocumentsPage> with MessagesViewMixin {
                           ),
                           onPressed: () {
                             selfServiceController.clearDocuments();
+                            setState(() {
+                              
+                            });
                           },
                           child: const Text(
                             'Remover todas',
