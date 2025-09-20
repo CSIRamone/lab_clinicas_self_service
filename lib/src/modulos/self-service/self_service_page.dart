@@ -38,7 +38,7 @@ class _SelfServicePageState extends State<SelfServicePage>
           case FormSteps.done:
             baseRoute += 'done';
           case FormSteps.restart:
-          Navigator.of(context).popUntil(ModalRoute.withName('/self-srvice'));
+          Navigator.of(context).popUntil(ModalRoute.withName('/self-service'));
           controller.startProcess();
             return;
         }
